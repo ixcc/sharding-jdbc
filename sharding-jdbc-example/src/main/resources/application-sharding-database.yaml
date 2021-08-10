@@ -1,0 +1,51 @@
+# datasource
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0, ds1
+    ds0:
+      type: com.zaxxer.hikari.HikariDataSouce
+      dirver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/lagou1
+      username: root
+      password: 12345678
+    ds1:
+      type: com.zaxxer.hikari.HikariDataSouce
+      dirver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/lagou2
+      username: root
+      password: 12345678
+    # sharding-database
+    sharding:
+      tables:
+        position:
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: ds$->{id % 2}
+          key-generator:
+            column: id
+            type: LAGOUKEY #自定义id
+        position_detail:
+          database-strategy:
+            inline:
+              sharding-column: pid
+              algorithm-expression: ds$->{pid % 2}
+          key-generator:
+            column: id
+            type: SNOWFLAKE #雪花id
+        b_order:
+          database-strategy:
+            inline:
+              sharding-column: company_id
+              algorithm-expression: ds$->{company_id % 2}
+          table-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: b_order${id % 2}
+          actual-data-nodes: ds${0..1}.b_order${0..1}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+
+

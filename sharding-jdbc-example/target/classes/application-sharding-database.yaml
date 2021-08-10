@@ -1,0 +1,25 @@
+# datasource
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0, ds1
+    ds0:
+      type: com.zaxxer.hikari.HikariDataSouce
+      dirver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/lagou1
+      username: root
+      password: 12345678
+    ds1:
+      type: com.zaxxer.hikari.HikariDataSouce
+      dirver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/lagou2
+      username: root
+      password: 12345678
+    sharding:
+      tables:
+        position:
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: ds${id % 2}
+  # sharding-database
